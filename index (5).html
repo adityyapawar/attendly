@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f4f6fa">
+<meta name="description" content="ATTENDLY – Know where you stand. A simple attendance calculator for college students.">
+<title>ATTENDLY – Know where you stand.</title>
+<!-- Microsoft Clarity: replace YOUR_CLARITY_PROJECT_ID below with your real Project ID (one place only) -->
+<!-- Name inputs and the name greeting use Clarity's supported data-clarity-mask="True" attribute. Also review masking mode in your Clarity project settings. -->
+<script>
+(function(c,l,a,r,i,t,y){
+  if(i==="YOUR_CLARITY_PROJECT_ID"||c[a]&&c[a].q&&c.__clarityLoaded)return;
+  c.__clarityLoaded=1;
+  c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+  t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+  y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+})(window,document,"clarity","script","YOUR_CLARITY_PROJECT_ID");
+</script>
+<style>
+:root{--navy:#0b1f3a;--blue:#2563eb;--blue-d:#1d4ed8;--green:#16a34a;--amber:#d97706;--red:#dc2626;--bg:#f4f6fa;--card:#fff;--line:#e3e8f0;--mut:#5b6b82;--r:16px;
+--sh:0 1px 2px rgba(11,31,58,.05),0 4px 14px rgba(11,31,58,.05);
+--st:env(safe-area-inset-top,0px);--sb:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box;margin:0;-webkit-tap-highlight-color:transparent}
+html{height:100%;-webkit-text-size-adjust:100%}
+body{min-height:100%;background:var(--bg);color:var(--navy);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding:var(--st) 0 calc(84px + var(--sb));overflow-x:hidden}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer;border:0;background:none;touch-action:manipulation}
+:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.app{max-width:640px;margin:0 auto;padding:18px 16px 8px}
+h1{font-size:22px;letter-spacing:-.02em;line-height:1.2}
+h2{font-size:17px;letter-spacing:-.01em}
+.mut{color:var(--mut);font-size:13.5px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px}
+.brand{font-weight:800;letter-spacing:.06em;font-size:13px;color:var(--blue)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--sh);padding:16px;margin-bottom:12px}
+.view{animation:in .28s ease both}
+@keyframes in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.hero{display:flex;align-items:center;gap:16px}
+.ring{position:relative;width:104px;height:104px;flex:none}
+.ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.ring circle{fill:none;stroke-width:9;stroke-linecap:round}
+.ring .bg{stroke:var(--line)}
+.ring .fg{transition:stroke-dashoffset .8s cubic-bezier(.2,.8,.2,1),stroke .3s}
+.ring b{position:absolute;inset:0;display:grid;place-items:center;font-size:23px;letter-spacing:-.02em}
+.hero p{margin-top:4px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 8px;text-align:center}
+.stat b{display:block;font-size:20px;letter-spacing:-.02em}
+.stat span{font-size:12px;color:var(--mut)}
+.sec{display:flex;justify-content:space-between;align-items:center;margin:18px 0 10px}
+.btn{min-height:44px;padding:0 16px;border-radius:12px;font-weight:600;transition:transform .12s,background .2s}
+.btn:active{transform:scale(.96)}
+.pri{background:var(--blue);color:#fff}.pri:hover{background:var(--blue-d)}
+.sec-b{background:#eaf0fe;color:var(--blue-d)}
+.out{border:1px solid var(--line);background:#fff}
+.dng{background:#fee2e2;color:var(--red)}
+.sm{min-height:40px;padding:0 12px;font-size:14px}
+.row{display:flex;gap:8px;flex-wrap:wrap}.row>*{flex:1 1 auto}
+.sub-h{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.sub-h h2{overflow-wrap:anywhere}
+.pct{font-weight:800;font-size:18px;white-space:nowrap}
+.bar{height:8px;background:var(--line);border-radius:99px;overflow:hidden;margin:10px 0 8px;position:relative}
+.bar i{display:block;height:100%;width:0;border-radius:99px;transition:width .7s cubic-bezier(.2,.8,.2,1)}
+.bar u{position:absolute;top:-2px;bottom:-2px;width:2px;background:var(--navy);opacity:.35}
+.ok{color:var(--green)}.warn{color:var(--amber)}.low{color:var(--red)}.none{color:var(--mut)}
+i.ok{background:var(--green)}i.warn{background:var(--amber)}i.low{background:var(--red)}i.none{background:var(--mut)}
+.msg{font-size:13.5px;margin-bottom:12px}
+.pill{display:inline-block;font-size:12px;font-weight:600;padding:2px 9px;border-radius:99px;background:#f0f3f8;color:var(--mut)}
+.empty{text-align:center;padding:28px 16px}.empty p{margin:6px 0 16px}
+.res{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0}
+.res div{border:1px solid var(--line);border-radius:14px;padding:14px 12px}
+.res b{display:block;font-size:30px;letter-spacing:-.03em;line-height:1.1}
+.res span{font-size:12.5px;color:var(--mut)}
+label{display:block;font-weight:600;font-size:13.5px;margin:12px 0 6px}
+input,select{width:100%;min-height:46px;border:1px solid #cfd8e6;border-radius:12px;padding:0 12px;background:#fff;font-size:16px}
+input:focus,select:focus{border-color:var(--blue);outline:2px solid #bfd3fb}
+.err{color:var(--red);font-size:13px;min-height:18px;margin-top:6px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.set{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 0;border-top:1px solid var(--line)}
+.set:first-of-type{border-top:0}
+.set div{min-width:0}
+footer{text-align:center;color:var(--mut);font-size:12.5px;padding:22px 0 6px;line-height:1.7}
+nav{position:fixed;left:0;right:0;bottom:0;z-index:20;background:rgba(255,255,255,.96);border-top:1px solid var(--line);padding-bottom:var(--sb);backdrop-filter:blur(8px)}
+nav div{max-width:640px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr)}
+nav button{display:flex;flex-direction:column;align-items:center;gap:2px;padding:9px 0 8px;font-size:11.5px;font-weight:600;color:var(--mut);min-height:56px;transition:color .2s}
+nav button svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+nav button[aria-current=page]{color:var(--blue)}
+.ov{position:fixed;inset:0;z-index:30;background:rgba(11,31,58,.45);opacity:0;pointer-events:none;transition:opacity .22s}
+.ov.open{opacity:1;pointer-events:auto}
+.sheet{position:absolute;left:0;right:0;bottom:0;max-width:640px;margin:0 auto;background:#fff;border-radius:22px 22px 0 0;padding:18px 16px calc(18px + var(--sb));transform:translateY(100%);transition:transform .28s cubic-bezier(.2,.8,.2,1);max-height:92vh;overflow:auto}
+.ov.open .sheet{transform:none}
+.grab{width:38px;height:4px;border-radius:9px;background:var(--line);margin:-6px auto 12px}
+#toast{position:fixed;left:50%;bottom:calc(76px + var(--sb));transform:translate(-50%,16px);background:var(--navy);color:#fff;padding:10px 16px;border-radius:12px;font-size:14px;opacity:0;pointer-events:none;transition:.25s;z-index:40;max-width:calc(100% - 32px);text-align:center}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+.card.alert{border-left:4px solid var(--red)}
+.pill.r{background:#fee2e2;color:var(--red)}
+.att{border-color:#f5c2c2;background:#fffafa}
+.att-i{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 0;border-top:1px solid var(--line)}
+.att-i:first-of-type{border-top:0}
+h1{overflow-wrap:anywhere}
+.feat{list-style:none;padding:0;margin:18px 0 24px}
+.feat li{position:relative;padding:8px 0 8px 30px}
+.feat li::before{content:"";position:absolute;left:4px;top:12px;width:12px;height:6px;border-left:2px solid var(--blue);border-bottom:2px solid var(--blue);transform:rotate(-45deg)}
+.wel{min-height:70vh;display:flex;flex-direction:column;justify-content:center}
+.wel h1{font-size:28px}
+body.onb{padding-bottom:16px}
+body.onb nav{display:none}
+@media(min-width:768px){.app{padding-top:32px}h1{font-size:26px}.ring{width:120px;height:120px}}
+@media(max-width:340px){.hero{flex-direction:column;align-items:flex-start}.res b{font-size:26px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="app"><main id="v" aria-live="polite"></main>
+<footer>Building Better Tomorrows, Today.<br>👨🏻‍💻 by Aditya Pawar</footer></div>
+
+<nav aria-label="Main"><div>
+<button data-v="home"><svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8M5 10v10h14V10"/></svg>Home</button>
+<button data-v="subjects"><svg viewBox="0 0 24 24"><path d="M4 5h16M4 12h16M4 19h10"/></svg>Subjects</button>
+<button data-v="calc"><svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8M8 12h2M14 12h2M8 16h2M14 16h2"/></svg>Calculator</button>
+<button data-v="settings"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></svg>Settings</button>
+</div></nav>
+
+<div class="ov" id="sov"><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="st"><div class="grab"></div>
+<h2 id="st">Add subject</h2>
+<label for="fn">Subject name</label><input id="fn" data-clarity-mask="True" maxlength="40" autocomplete="off" placeholder="e.g. Economics">
+<div class="two"><div><label for="fa">Attended</label><input id="fa" data-clarity-mask="True" inputmode="numeric" pattern="[0-9]*" placeholder="0"></div>
+<div><label for="ft">Total lectures</label><input id="ft" data-clarity-mask="True" inputmode="numeric" pattern="[0-9]*" placeholder="0"></div></div>
+<p class="err" id="fe" role="alert"></p>
+<div class="row"><button class="btn out" id="sx">Cancel</button><button class="btn pri" id="ss">Save subject</button></div></div></div>
+
+<div class="ov" id="dov"><div class="sheet" role="alertdialog" aria-modal="true" aria-labelledby="dt"><div class="grab"></div>
+<h2 id="dt"></h2><p class="mut" id="dm" style="margin:6px 0 16px"></p>
+<div class="row"><button class="btn out" id="dx">Cancel</button><button class="btn dng" id="dy"></button></div></div></div>
+<div id="toast" role="status"></div>
+
+<script>
+(function(){
+"use strict";
+var KEY="attendly.v1",DEF=80,VER="1.1",MAX=9999;
+var SAMPLE=[["Economics",18,22],["Marketing",14,20],["Statistics",9,15],["Business Law",21,24]];
+var S,NAME="",view="home",editId=null,calcSel="all",onYes=null,lastPct=0,lastF=null,tt;
+var $=function(s){return document.querySelector(s)},V=$("#v");
+
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6)}
+function fresh(){return{target:DEF,subjects:SAMPLE.map(function(x){return{id:uid(),name:x[0],a:x[1],t:x[2],sample:true}})}}
+function load(){
+  try{var raw=localStorage.getItem(KEY);if(raw===null)return save(fresh());
+    var d=JSON.parse(raw),tg=Number(d&&d.target);
+    if(d&&Array.isArray(d.subjects)){
+      return{target:Number.isInteger(tg)&&tg>=1&&tg<=100?tg:DEF,
+        subjects:d.subjects.filter(function(s){return s&&typeof s.name==="string"&&Number.isInteger(s.a)&&Number.isInteger(s.t)&&s.a>=0&&s.t>=s.a})
+        .map(function(s){return{id:String(s.id||uid()),name:s.name.slice(0,40),a:s.a,t:s.t,sample:!!s.sample}})}}
+  }catch(e){}
+  return save(fresh());
+}
+function save(o){o=o||S;try{localStorage.setItem(KEY,JSON.stringify(o))}catch(e){}return o}
+var PK="attendly.profile";
+function loadName(){try{var d=JSON.parse(localStorage.getItem(PK));return d&&typeof d.name==="string"?d.name.trim().slice(0,30):""}catch(e){return""}}
+function saveName(n){NAME=n;try{localStorage.setItem(PK,JSON.stringify({name:n}))}catch(e){}}
+function cleanName(r){return String(r).replace(/\s+/g," ").trim()}
+function esc(s){return String(s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
+function plural(n,w){return n+" "+w+(n===1?"":"s")}
+
+/* ---- core maths ---- */
+function calc(a,t,tg){
+  if(t<=0)return{p:null,bunk:0,need:0,state:"none"};
+  var r=tg/100,met=a*100>=tg*t,bunk=Math.max(0,Math.floor(a/r-t+1e-9)),need=0;
+  if(!met)need=r>=1?null:Math.max(0,Math.ceil((r*t-a)/(1-r)-1e-9));
+  return{p:a/t*100,bunk:bunk,need:need,state:!met?"low":bunk<=1?"warn":"ok"};
+}
+function totals(){return S.subjects.reduce(function(o,s){o.a+=s.a;o.t+=s.t;return o},{a:0,t:0})}
+function fmt(p){return p===null?"–":(Math.round(p*10)/10)+"%"}
+function say(c,tg){
+  if(c.state==="none")return"Add your lectures to see where you stand.";
+  if(c.state==="low")return c.need===null?"Recovery isn't possible at a 100% target: a missed lecture keeps you below 100% for good. Lower your target in Settings."
+    :"Below your "+tg+"% target. Attend the next "+plural(c.need,"lecture")+" in a row to reach it.";
+  if(c.state==="warn")return c.bunk===0?"Right on target. Missing the next lecture drops you below "+tg+"%."
+    :"Approaching your limit. You can miss just 1 more lecture.";
+  return"Your attendance is healthy. You can miss the next "+plural(c.bunk,"lecture")+" and stay at or above "+tg+"%.";
+}
+
+function sayOverall(c,lowN){
+  if(c.state==="none")return"Add your lectures to see where you stand.";
+  return"Overall is "+(c.state==="low"?"below":"on or above")+" your "+S.target+"% target. "+(lowN?plural(lowN,"subject")+(lowN===1?" needs":" need")+" attention.":"No subject is below target.");
+}
+function lows(){return S.subjects.filter(function(s){return calc(s.a,s.t,S.target).state==="low"})}
+function sorted(){var l=lows();return l.concat(S.subjects.filter(function(s){return l.indexOf(s)<0}))}
+function attention(low){
+  if(!low.length)return"";
+  return'<section class="card att"><h2>Needs attention</h2><p class="mut" style="margin-bottom:6px">'+plural(low.length,"subject")+' below your '+S.target+'% target.</p>'+low.map(function(s){var c=calc(s.a,s.t,S.target);return'<div class="att-i"><div style="min-width:0"><b style="overflow-wrap:anywhere">'+esc(s.name)+'</b><p class="mut">'+(c.need===null?"Can't recover at a 100% target":"Attend the next "+plural(c.need,"lecture")+" in a row")+'</p></div><b class="low">'+fmt(c.p)+'</b></div>'}).join("")+'</section>';
+}
+/* ---- UI helpers ---- */
+function toast(m){var t=$("#toast");t.textContent=m;t.classList.add("show");clearTimeout(tt);tt=setTimeout(function(){t.classList.remove("show")},2200)}
+function animate(){requestAnimationFrame(function(){requestAnimationFrame(function(){
+  V.querySelectorAll("[data-w]").forEach(function(e){e.style.width=e.dataset.w+"%"});
+  V.querySelectorAll("[data-off]").forEach(function(e){e.style.strokeDashoffset=e.dataset.off});
+})})}
+function tween(el,to){
+  if(!el)return;var from=lastPct,reduce=matchMedia("(prefers-reduced-motion:reduce)").matches;
+  lastPct=to===null?0:to;
+  if(reduce||to===null||from===to){el.textContent=fmt(to);return}
+  var t0=performance.now();(function f(n){var k=Math.min(1,(n-t0)/500);el.textContent=fmt(from+(to-from)*(1-Math.pow(1-k,3)));if(k<1)requestAnimationFrame(f)})(t0);
+}
+function sheet(id,open){
+  var o=$(id);
+  if(open&&!document.querySelector(".ov.open"))lastF=document.activeElement;
+  o.classList.toggle("open",open);
+  if(open)o.removeAttribute("inert");else o.setAttribute("inert","");
+  var any=!!document.querySelector(".ov.open");
+  [".app","nav"].forEach(function(s){var e=$(s);if(any)e.setAttribute("inert","");else e.removeAttribute("inert")});
+  if(!any&&lastF){try{lastF.focus()}catch(x){}lastF=null}
+}
+function ask(title,msg,label,fn){$("#dt").textContent=title;$("#dm").textContent=msg;$("#dy").textContent=label;onYes=fn;sheet("#dov",true);$("#dx").focus()}
+
+/* ---- views ---- */
+function subCard(s,manage){
+  var c=calc(s.a,s.t,S.target),w=c.p===null?0:Math.min(100,c.p);
+  return'<article class="card'+(c.state==="low"?' alert':'')+'"><div class="sub-h"><h2>'+esc(s.name)+(c.state==="low"?' <span class="pill r">Below target</span>':'')+(s.sample?' <span class="pill">Sample</span>':'')+'</h2><span class="pct '+c.state+'">'+fmt(c.p)+'</span></div>'+
+  '<div class="bar" role="progressbar" aria-label="'+esc(s.name)+' attendance" aria-valuemin="0" aria-valuemax="100" aria-valuenow="'+Math.round(w)+'"><i class="'+c.state+'" data-w="'+w+'"></i><u style="left:'+S.target+'%"></u></div>'+
+  '<p class="mut" style="margin-bottom:6px">'+s.a+' of '+s.t+' lectures attended</p><p class="msg">'+say(c,S.target)+'</p>'+
+  '<div class="row"><button class="btn sec-b sm" data-act="p" data-id="'+s.id+'" aria-label="Mark present for '+esc(s.name)+'">+ Present</button>'+
+  '<button class="btn out sm" data-act="a" data-id="'+s.id+'" aria-label="Mark absent for '+esc(s.name)+'">+ Absent</button>'+
+  (manage?'<button class="btn out sm" data-act="e" data-id="'+s.id+'" aria-label="Edit '+esc(s.name)+'">Edit</button><button class="btn dng sm" data-act="d" data-id="'+s.id+'" aria-label="Delete '+esc(s.name)+'">Delete</button>':'')+'</div></article>';
+}
+function emptyCard(){return'<div class="card empty"><h2>No subjects yet</h2><p class="mut">Add your first subject to start tracking attendance.</p><button class="btn pri" data-act="add">Add subject</button></div>'}
+
+function home(){
+  var T=totals(),lw=lows(),c=calc(T.a,T.t,S.target),p=c.p===null?0:Math.min(100,c.p),C=2*Math.PI*44;
+  return'<div class="view"><div class="top"><div><div class="brand">ATTENDLY</div><h1>Welcome back, <span data-clarity-mask="True">'+esc(NAME)+'</span>!</h1><p class="mut">Know where you stand.</p></div></div>'+
+  '<section class="card hero"><div class="ring"><svg viewBox="0 0 100 100" aria-hidden="true"><circle class="bg" cx="50" cy="50" r="44"/><circle class="fg '+c.state+'" cx="50" cy="50" r="44" stroke="currentColor" style="stroke-dasharray:'+C+';stroke-dashoffset:'+C+'" data-off="'+(C*(1-p/100))+'"/></svg><b id="ov" class="'+c.state+'">'+fmt(c.p)+'</b></div>'+
+  '<div style="min-width:0"><h2>Overall attendance</h2><p class="mut">All subjects combined. Target '+S.target+'%.</p><p class="msg" style="margin:6px 0 0">'+sayOverall(c,lw.length)+'</p></div></section>'+
+  '<div class="stats"><div class="stat"><b>'+T.t+'</b><span>Lectures</span></div><div class="stat"><b>'+T.a+'</b><span>Attended</span></div><div class="stat"><b>'+S.subjects.length+'</b><span>Subjects</span></div></div>'+
+  attention(lw)+'<div class="sec"><h2>Subject-wise</h2><button class="btn pri sm" data-act="add">+ Add subject</button></div>'+
+  (S.subjects.length?sorted().map(function(s){return subCard(s,false)}).join(""):emptyCard())+'</div>';
+}
+function subjects(){
+  return'<div class="view"><div class="top"><h1>Subjects</h1><button class="btn pri sm" data-act="add">+ Add subject</button></div>'+
+  (S.subjects.length?S.subjects.map(function(s){return subCard(s,true)}).join(""):emptyCard())+'</div>';
+}
+function calcView(){
+  var opts='<option value="all">Overall (all subjects combined)</option>'+S.subjects.map(function(s){return'<option value="'+s.id+'"'+(s.id===calcSel?' selected':'')+'>'+esc(s.name)+'</option>'}).join("");
+  return'<div class="view"><div class="top"><h1>Calculator</h1></div>'+(S.subjects.length?
+  '<div class="card"><label for="cs" style="margin-top:0">Check</label><select id="cs">'+opts+'</select><div id="cr"></div></div>'+
+  '<div class="card"><h2>What if?</h2><p class="mut">See your percentage after the next few lectures.</p><label for="cn">Number of lectures</label><input id="cn" inputmode="numeric" pattern="[0-9]*" value="1"><p class="err" id="ce"></p><div id="cw"></div></div>':emptyCard())+'</div>';
+}
+function curTotals(){
+  if(calcSel==="all")return totals();
+  var s=S.subjects.filter(function(x){return x.id===calcSel})[0];return s?{a:s.a,t:s.t}:totals();
+}
+function fillCalc(){
+  var T=curTotals(),c=calc(T.a,T.t,S.target),o=calcSel==="all"?"overall ":"",cr=$("#cr");if(!cr)return;
+  cr.innerHTML='<p class="pct '+c.state+'" style="font-size:30px;margin-top:14px">'+fmt(c.p)+'</p><p class="mut">'+T.a+' of '+T.t+' lectures · target '+S.target+'%</p>'+
+  '<div class="res"><div><b class="ok">'+(c.state==="low"?0:c.bunk)+'</b><span>'+o+'lectures you can miss in a row</span></div><div><b class="'+(c.state==="low"?"low":"none")+'">'+(c.need===null?"–":c.need)+'</b><span>'+o+'lectures needed in a row to reach target</span></div></div><p class="msg">'+(calcSel==="all"?sayOverall(c,lows().length):say(c,S.target))+'</p>'+(calcSel==="all"?'<p class="mut">This is an aggregate estimate assuming each upcoming lecture is attended or missed. It does not replace subject-wise attendance requirements. Check each subject separately before deciding to miss a lecture.</p>':'');
+  whatIf();
+}
+function whatIf(){
+  var n=$("#cn"),w=$("#cw"),e=$("#ce");if(!n)return;
+  var raw=n.value.trim(),k=Number(raw);
+  if(raw===""||!/^\d+$/.test(raw)||k>MAX){e.textContent=raw===""?"Enter a number of lectures.":"Use a whole number from 0 to "+MAX+".";w.innerHTML="";return}
+  e.textContent="";var T=curTotals(),at=calc(T.a+k,T.t+k,S.target),ms=calc(T.a,T.t+k,S.target);
+  w.innerHTML='<div class="res"><div><b class="'+at.state+'">'+fmt(at.p)+'</b><span>if you attend the next '+plural(k,"lecture")+'</span></div><div><b class="'+ms.state+'">'+fmt(ms.p)+'</b><span>if you miss the next '+plural(k,"lecture")+'</span></div></div>';
+}
+function settings(){
+  var hasS=S.subjects.some(function(s){return s.sample});
+  return'<div class="view"><div class="top"><h1>Settings</h1></div>'+
+  '<div class="card"><h2>Your name</h2><label for="tn">Name</label><div class="row"><input id="tn" maxlength="30" autocomplete="given-name" data-clarity-mask="True" value="'+esc(NAME)+'" style="flex:1 1 140px"><button class="btn pri" data-act="nm" style="flex:0 0 auto">Save name</button></div><p class="err" id="ne" role="alert"></p></div>'+
+  '<div class="card"><h2>Attendance target</h2><p class="mut">Most colleges require 75–80%. New users start at '+DEF+'%.</p><label for="tg">Target percentage</label>'+
+  '<div class="row"><input id="tg" inputmode="numeric" pattern="[0-9]*" value="'+S.target+'" style="flex:1 1 90px"><button class="btn pri" data-act="tg" style="flex:0 0 auto">Save target</button></div><p class="err" id="te"></p></div>'+
+  '<div class="card"><h2>Your data</h2><div class="set"><div><b>Clear sample data</b><p class="mut">Remove the example subjects.</p></div><button class="btn out sm" data-act="cs"'+(hasS?'':' disabled style="opacity:.45"')+'>Clear</button></div>'+
+  '<div class="set"><div><b>Reset application</b><p class="mut">Delete all subjects and restore the '+DEF+'% target. Your name stays.</p></div><button class="btn dng sm" data-act="rs">Reset</button></div></div>'+
+  '<div class="card"><h2>About</h2><p class="mut" style="margin-top:4px">ATTENDLY helps you track attendance and see how many lectures you can miss or must attend. Your profile and attendance records are stored on this device.</p><p class="mut" style="margin-top:8px">Version '+VER+'</p></div></div>';
+}
+
+function welcome(){return'<div class="view wel"><div class="brand">ATTENDLY</div><h1>Know where you stand.</h1><p class="mut" style="margin-top:8px">A simple attendance tracker for college students.</p><ul class="feat"><li>Track attendance across all your subjects</li><li>See how many lectures you can safely miss</li><li>Find out how many you need to recover</li><li>Follow your target with clear insights</li></ul><button class="btn pri" data-act="start" aria-label="Get started with ATTENDLY" style="width:100%">Get Started</button></div>'}
+function profileView(){return'<div class="view wel"><div class="brand">ATTENDLY</div><h1>What should we call you?</h1><p class="mut" style="margin-top:8px">Just your name. It stays on this device.</p><label for="pn">Your name</label><input id="pn" maxlength="30" autocomplete="given-name" autocapitalize="words" data-clarity-mask="True" placeholder="e.g. Aditya"><p class="err" id="pe" role="alert"></p><button class="btn pri" data-act="mk" style="width:100%">Create My Profile</button></div>'}
+function render(){
+  if(!NAME&&view!=="profile")view="welcome";
+  document.body.classList.toggle("onb",view==="welcome"||view==="profile");
+  V.innerHTML={home:home,subjects:subjects,calc:calcView,settings:settings,welcome:welcome,profile:profileView}[view]();
+  document.querySelectorAll("nav button").forEach(function(b){if(b.dataset.v===view)b.setAttribute("aria-current","page");else b.removeAttribute("aria-current")});
+  if(view==="home"){var T=totals();tween($("#ov"),calc(T.a,T.t,S.target).p)}
+  if(view==="calc")fillCalc();
+  animate();
+  if(view==="profile")$("#pn").focus();
+}
+function go(v){view=v;render();window.scrollTo(0,0)}
+
+/* ---- subject form ---- */
+function openForm(id){
+  editId=id||null;var s=S.subjects.filter(function(x){return x.id===id})[0];
+  $("#st").textContent=s?"Edit subject":"Add subject";
+  $("#fn").value=s?s.name:"";$("#fa").value=s?s.a:"";$("#ft").value=s?s.t:"";$("#fe").textContent="";
+  sheet("#sov",true);setTimeout(function(){$("#fn").focus()},260);
+}
+function saveForm(){
+  var n=$("#fn").value.trim(),ra=$("#fa").value.trim(),rt=$("#ft").value.trim(),e=$("#fe");
+  if(!n)return e.textContent="Enter a subject name.";
+  if(ra===""||rt==="")return e.textContent="Enter both attended and total lectures.";
+  if(!/^\d+$/.test(ra)||!/^\d+$/.test(rt))return e.textContent="Use whole numbers only, with no negatives or decimals.";
+  var a=+ra,t=+rt;
+  if(a>MAX||t>MAX)return e.textContent="Numbers can't be larger than "+MAX+".";
+  if(a>t)return e.textContent="Attended lectures can't be more than total lectures.";
+  var dup=S.subjects.some(function(s){return s.id!==editId&&s.name.toLowerCase()===n.toLowerCase()});
+  if(dup)return e.textContent="You already have a subject with this name.";
+  if(editId){S.subjects.forEach(function(s){if(s.id===editId){s.name=n;s.a=a;s.t=t;s.sample=false}});toast("Subject updated")}
+  else{S.subjects.push({id:uid(),name:n,a:a,t:t,sample:false});toast("Subject added")}
+  save();sheet("#sov",false);render();
+}
+
+/* ---- events ---- */
+document.addEventListener("click",function(ev){
+  var nb=ev.target.closest("nav button");if(nb)return go(nb.dataset.v);
+  var b=ev.target.closest("[data-act]");if(!b)return;
+  var act=b.dataset.act,id=b.dataset.id,s=S.subjects.filter(function(x){return x.id===id})[0];
+  if(act==="start")go("profile");
+  else if(act==="mk"){var pn=cleanName($("#pn").value),pe=$("#pe");if(!pn)return pe.textContent="Enter your name to continue.";saveName(pn);go("home");toast("Profile created")}
+  else if(act==="nm"){var nn=cleanName($("#tn").value),ne=$("#ne");if(!nn)return ne.textContent="Name can't be empty.";saveName(nn);ne.textContent="";toast("Name updated")}
+  else if(act==="add")openForm();
+  else if(act==="e"&&s)openForm(id);
+  else if(act==="p"&&s){if(s.t>=MAX)return toast("Lecture limit reached for "+s.name+".");s.a++;s.t++;s.sample=false;save();render();toast("Marked present · "+s.name)}
+  else if(act==="a"&&s){if(s.t>=MAX)return toast("Lecture limit reached for "+s.name+".");s.t++;s.sample=false;save();render();toast("Marked absent · "+s.name)}
+  else if(act==="d"&&s)ask("Delete "+s.name+"?","This removes the subject and its attendance. You can't undo this.","Delete subject",function(){S.subjects=S.subjects.filter(function(x){return x.id!==id});if(calcSel===id)calcSel="all";save();render();toast("Subject deleted")});
+  else if(act==="tg"){
+    var r=$("#tg").value.trim(),e=$("#te");
+    if(!/^\d+$/.test(r)||+r<1||+r>100)return e.textContent="Enter a whole number from 1 to 100.";
+    S.target=+r;save();e.textContent="";toast("Target set to "+S.target+"%");
+  }
+  else if(act==="cs")ask("Clear sample data?","The example subjects will be removed. Subjects you added or changed stay.","Clear samples",function(){S.subjects=S.subjects.filter(function(x){return !x.sample});save();render();toast("Sample data cleared")});
+  else if(act==="rs")ask("Reset ATTENDLY?","All subjects will be deleted and your target returns to "+DEF+"%. Your name stays. You can't undo this.","Reset everything",function(){S={target:DEF,subjects:[]};calcSel="all";save();render();toast("Application reset")});
+});
+document.addEventListener("change",function(e){if(e.target.id==="cs"){calcSel=e.target.value;fillCalc()}});
+document.addEventListener("input",function(e){if(e.target.id==="cn")whatIf()});
+$("#ss").onclick=saveForm;$("#sx").onclick=function(){sheet("#sov",false)};
+$("#dx").onclick=function(){sheet("#dov",false);onYes=null};
+$("#dy").onclick=function(){var f=onYes;onYes=null;sheet("#dov",false);if(f)f()};
+["#sov","#dov"].forEach(function(id){$(id).addEventListener("click",function(e){if(e.target===this)sheet(id,false)})});
+document.addEventListener("keydown",function(e){
+  if(e.key==="Escape"){sheet("#sov",false);sheet("#dov",false)}
+  if(e.key==="Tab"){var op=document.querySelector(".ov.open");if(op){var fs=op.querySelectorAll("button:not([disabled]),input:not([disabled]),select:not([disabled]),[tabindex]:not([tabindex=\"-1\"])");if(fs.length){var f0=fs[0],f1=fs[fs.length-1];if(e.shiftKey&&document.activeElement===f0){e.preventDefault();f1.focus()}else if(!e.shiftKey&&document.activeElement===f1){e.preventDefault();f0.focus()}}}}
+  if(e.key==="Enter"&&(e.target.id==="pn"||e.target.id==="tn")){e.preventDefault();var eb=document.querySelector('[data-act="'+(e.target.id==="pn"?"mk":"nm")+'"]');if(eb)eb.click()}
+  if(e.key==="Enter"&&$("#sov").classList.contains("open")&&e.target.tagName==="INPUT"){e.preventDefault();saveForm()}
+});
+
+S=load();NAME=loadName();view=NAME?"home":"welcome";
+["#sov","#dov"].forEach(function(i){$(i).setAttribute("inert","")});
+render();
+})();
+</script>
+</body>
+</html>
