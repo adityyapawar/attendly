@@ -6,7 +6,6 @@
 <meta name="theme-color" content="#f4f6fa">
 <meta name="description" content="ATTENDLY – Know where you stand. A simple attendance calculator for college students.">
 <title>ATTENDLY – Know where you stand.</title>
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
 <!-- Microsoft Clarity: replace YOUR_CLARITY_PROJECT_ID below with your real Project ID (one place only) -->
 <!-- Name inputs and the name greeting use Clarity's supported data-clarity-mask="True" attribute. Also review masking mode in your Clarity project settings. -->
 <script>
@@ -16,7 +15,7 @@
   c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
   t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
   y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-})(window,document,"clarity","script","z5w69tn8ii");
+})(window,document,"clarity","script","YOUR_CLARITY_PROJECT_ID");
 </script>
 <style>
 :root{--navy:#0b1f3a;--blue:#2563eb;--blue-d:#1d4ed8;--green:#16a34a;--amber:#d97706;--red:#dc2626;--bg:#f4f6fa;--card:#fff;--line:#e3e8f0;--mut:#5b6b82;--r:16px;
@@ -107,6 +106,21 @@ h1{overflow-wrap:anywhere}
 .wel h1{font-size:28px}
 body.onb{padding-bottom:16px}
 body.onb nav{display:none}
+
+/* ATTENDLY guided tour */
+.tour-spotlight{position:relative!important;z-index:61!important;box-shadow:0 0 0 4px var(--blue),0 0 0 9999px rgba(11,31,58,.58)!important;border-radius:14px!important}
+#tourbox{position:fixed;z-index:70;left:16px;right:16px;bottom:calc(76px + var(--sb));max-width:608px;margin:0 auto;background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:0 16px 48px rgba(11,31,58,.22);padding:18px}
+#tourbox[hidden]{display:none}
+#tourbox h2{font-size:17px;margin:8px 0 5px}
+#tourbox p{font-size:13.5px;color:var(--mut);line-height:1.5}
+.tour-top{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.tour-count{font-size:12px;font-weight:700;color:var(--blue)}
+.tour-actions{display:flex;align-items:center;gap:8px;margin-top:15px}
+.tour-actions .spacer{flex:1}
+#tourbox button{min-height:40px}
+@media(min-width:768px){#tourbox{bottom:24px}}
+@media(max-width:380px){#tourbox{left:10px;right:10px;padding:14px}}
+
 @media(min-width:768px){.app{padding-top:32px}h1{font-size:26px}.ring{width:120px;height:120px}}
 @media(max-width:340px){.hero{flex-direction:column;align-items:flex-start}.res b{font-size:26px}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
@@ -135,13 +149,18 @@ body.onb nav{display:none}
 <h2 id="dt"></h2><p class="mut" id="dm" style="margin:6px 0 16px"></p>
 <div class="row"><button class="btn out" id="dx">Cancel</button><button class="btn dng" id="dy"></button></div></div></div>
 <div id="toast" role="status"></div>
+<div id="tourbox" role="dialog" aria-modal="false" aria-labelledby="tourtitle" hidden>
+  <div class="tour-top"><span class="tour-count" id="tourcount"></span><button type="button" class="mut" id="tourskip">Skip tour</button></div>
+  <h2 id="tourtitle"></h2><p id="tourtext"></p>
+  <div class="tour-actions"><button type="button" class="btn out sm" id="tourback">Back</button><span class="spacer"></span><button type="button" class="btn pri sm" id="tournext">Next</button></div>
+</div>
 
 <script>
 (function(){
 "use strict";
 var KEY="attendly.v1",DEF=80,VER="1.1",MAX=9999;
 var SAMPLE=[["Economics",18,22],["Marketing",14,20],["Statistics",9,15],["Business Law",21,24]];
-var S,NAME="",view="home",editId=null,calcSel="all",onYes=null,lastPct=0,lastF=null,tt;
+var S,NAME="",view="home",editId=null,calcSel="all",onYes=null,lastPct=0,lastF=null,tt,tourIndex=0,tourActive=false,tourReturnView="home";
 var $=function(s){return document.querySelector(s)},V=$("#v");
 
 function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6)}
@@ -271,11 +290,62 @@ function settings(){
   '<div class="row"><input id="tg" inputmode="numeric" pattern="[0-9]*" value="'+S.target+'" style="flex:1 1 90px"><button class="btn pri" data-act="tg" style="flex:0 0 auto">Save target</button></div><p class="err" id="te"></p></div>'+
   '<div class="card"><h2>Your data</h2><div class="set"><div><b>Clear sample data</b><p class="mut">Remove the example subjects.</p></div><button class="btn out sm" data-act="cs"'+(hasS?'':' disabled style="opacity:.45"')+'>Clear</button></div>'+
   '<div class="set"><div><b>Reset application</b><p class="mut">Delete all subjects and restore the '+DEF+'% target. Your name stays.</p></div><button class="btn dng sm" data-act="rs">Reset</button></div></div>'+
-  '<div class="card"><h2>About</h2><p class="mut" style="margin-top:4px">ATTENDLY helps you track attendance and see how many lectures you can miss or must attend. Your profile and attendance records are stored on this device.</p><p class="mut" style="margin-top:8px">Version '+VER+'</p></div></div>';
+  '<div class="card"><h2>About</h2><p class="mut" style="margin-top:4px">ATTENDLY is a simple, student-focused attendance companion designed to make academic planning clearer. Track attendance across subjects, monitor your progress against your target, and make informed decisions with practical attendance and recovery insights. Your profile and attendance data are stored locally on this device.</p><p class="mut" style="margin-top:8px">Version '+VER+'</p><button class="btn sec-b sm" data-act="tour" style="margin-top:12px">Take a tour again</button></div></div>';
 }
 
 function welcome(){return'<div class="view wel"><div class="brand">ATTENDLY</div><h1>Know where you stand.</h1><p class="mut" style="margin-top:8px">A simple attendance tracker for college students.</p><ul class="feat"><li>Track attendance across all your subjects</li><li>See how many lectures you can safely miss</li><li>Find out how many you need to recover</li><li>Follow your target with clear insights</li></ul><button class="btn pri" data-act="start" aria-label="Get started with ATTENDLY" style="width:100%">Get Started</button></div>'}
 function profileView(){return'<div class="view wel"><div class="brand">ATTENDLY</div><h1>What should we call you?</h1><p class="mut" style="margin-top:8px">Just your name. It stays on this device.</p><label for="pn">Your name</label><input id="pn" maxlength="30" autocomplete="given-name" autocapitalize="words" data-clarity-mask="True" placeholder="e.g. Aditya"><p class="err" id="pe" role="alert"></p><button class="btn pri" data-act="mk" style="width:100%">Create My Profile</button></div>'}
+
+var TOUR_KEY="attendly.tour.v1";
+var TOUR_STEPS=[
+  {view:"home",selector:".hero",title:"Your attendance at a glance",text:"This card shows your overall attendance across all subjects and compares it with your target."},
+  {view:"home",selector:".stats",title:"Know the numbers",text:"Quickly see your total lectures, lectures attended and how many subjects you're tracking."},
+  {view:"subjects",selector:".card",title:"Track each subject",text:"Add or edit subjects here. Use Present and Absent to update lectures as you go."},
+  {view:"calc",selector:".card",title:"Plan ahead with the calculator",text:"Choose a subject or overall attendance to see lectures you can miss, recovery lectures and what-if outcomes."},
+  {view:"settings",selector:".card",title:"Make ATTENDLY yours",text:"Set your attendance target, update your name, clear sample data or restart this tour anytime from Settings."}
+];
+function clearTourSpot(){
+  document.querySelectorAll(".tour-spotlight").forEach(function(e){e.classList.remove("tour-spotlight")});
+}
+function showTourStep(){
+  if(!tourActive)return;
+  clearTourSpot();
+  var step=TOUR_STEPS[tourIndex];
+  if(view!==step.view){view=step.view;render();}
+  var target=document.querySelector("#v "+step.selector);
+  if(target){
+    target.scrollIntoView({behavior:"smooth",block:"center"});
+    target.classList.add("tour-spotlight");
+  }
+  $("#tourcount").textContent="STEP "+(tourIndex+1)+" OF "+TOUR_STEPS.length;
+  $("#tourtitle").textContent=step.title;
+  $("#tourtext").textContent=step.text;
+  $("#tourback").disabled=tourIndex===0;
+  $("#tourback").style.opacity=tourIndex===0?".45":"1";
+  $("#tournext").textContent=tourIndex===TOUR_STEPS.length-1?"Finish":"Next";
+  $("#tourbox").hidden=false;
+}
+function startTour(){
+  tourReturnView=view;
+  tourActive=true;
+  tourIndex=0;
+  showTourStep();
+}
+function endTour(completed){
+  clearTourSpot();
+  tourActive=false;
+  $("#tourbox").hidden=true;
+  try{localStorage.setItem(TOUR_KEY,completed?"completed":"skipped");}catch(e){}
+  view="home";
+  render();
+  window.scrollTo(0,0);
+}
+function nextTour(){
+  if(tourIndex<TOUR_STEPS.length-1){tourIndex++;showTourStep();}
+  else endTour(true);
+}
+function backTour(){if(tourIndex>0){tourIndex--;showTourStep();}}
+
 function render(){
   if(!NAME&&view!=="profile")view="welcome";
   document.body.classList.toggle("onb",view==="welcome"||view==="profile");
@@ -316,8 +386,9 @@ document.addEventListener("click",function(ev){
   var b=ev.target.closest("[data-act]");if(!b)return;
   var act=b.dataset.act,id=b.dataset.id,s=S.subjects.filter(function(x){return x.id===id})[0];
   if(act==="start")go("profile");
-  else if(act==="mk"){var pn=cleanName($("#pn").value),pe=$("#pe");if(!pn)return pe.textContent="Enter your name to continue.";saveName(pn);go("home");toast("Profile created")}
+  else if(act==="mk"){var pn=cleanName($("#pn").value),pe=$("#pe");if(!pn)return pe.textContent="Enter your name to continue.";saveName(pn);go("home");toast("Profile created");setTimeout(function(){startTour()},350)}
   else if(act==="nm"){var nn=cleanName($("#tn").value),ne=$("#ne");if(!nn)return ne.textContent="Name can't be empty.";saveName(nn);ne.textContent="";toast("Name updated")}
+  else if(act==="tour")startTour();
   else if(act==="add")openForm();
   else if(act==="e"&&s)openForm(id);
   else if(act==="p"&&s){if(s.t>=MAX)return toast("Lecture limit reached for "+s.name+".");s.a++;s.t++;s.sample=false;save();render();toast("Marked present · "+s.name)}
@@ -333,7 +404,8 @@ document.addEventListener("click",function(ev){
 });
 document.addEventListener("change",function(e){if(e.target.id==="cs"){calcSel=e.target.value;fillCalc()}});
 document.addEventListener("input",function(e){if(e.target.id==="cn")whatIf()});
-$("#ss").onclick=saveForm;$("#sx").onclick=function(){sheet("#sov",false)};
+$("#tourskip").onclick=function(){endTour(false)};$("#tournext").onclick=nextTour;$("#tourback").onclick=backTour;
+  $("#ss").onclick=saveForm;$("#sx").onclick=function(){sheet("#sov",false)};
 $("#dx").onclick=function(){sheet("#dov",false);onYes=null};
 $("#dy").onclick=function(){var f=onYes;onYes=null;sheet("#dov",false);if(f)f()};
 ["#sov","#dov"].forEach(function(id){$(id).addEventListener("click",function(e){if(e.target===this)sheet(id,false)})});
